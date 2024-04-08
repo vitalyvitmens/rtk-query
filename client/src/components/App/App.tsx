@@ -1,6 +1,6 @@
-import { Router } from "@/routes";
-import s from './App.module.css';
-import { Links } from "@components/Links";
+import { Router } from '@/routes'
+import s from './App.module.css'
+import { Links } from '@components/Links'
 
 export const App = () => {
   return (
@@ -8,5 +8,5 @@ export const App = () => {
       <Links />
       <Router />
     </div>
-  );
-};
+  )
+}
