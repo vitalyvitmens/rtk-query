@@ -1,0 +1,179 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Characters Cardstore service
+  description: >-
+    A sample API that uses a cardstore as an example to demonstrate features in
+    the OpenAPI 3.0 specification
+  termsOfService: http://swagger.io/terms/
+  contact:
+    name: vitalyvitmens
+    email: otm_@tut.by
+    url: https://github.com/vitalyvitmens
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: http://localhost:5000/api
+  - url: http://cardstore.swagger.io/api
+paths:
+  /cards:
+    get:
+      tags:
+        - Cards
+      summary: Returns all character cards
+      description: Returns all character cards
+      operationId: getCards
+      responses:
+        '200':
+          description: card response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cards'
+
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Cards
+      summary: Creates a new card in the store.
+      description: Creates a new card in the store.
+      operationId: addCard
+      requestBody:
+        description: Card to add to the store
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FullCard'
+      responses:
+        '200':
+          description: card response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cards/{id}:
+    get:
+      tags:
+        - Cards
+      summary: Returns a characters card based on the ID supplied
+      description: >-
+        Returns a user based on a single ID, if the user does not have access to
+        the card
+      operationId: getCardById
+      parameters:
+        - name: id
+          in: path
+          description: ID of card to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: card response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullCard'
+                type: object
+                required:
+                  - story
+                properties:
+                  _id:
+                    type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Cards
+      summary: Deletes a single card based on the ID supplied
+      description: Deletes a single card based on the ID supplied
+      operationId: deleteCard
+      parameters:
+        - name: id
+          in: path
+          description: ID of card to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: card deleted
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Cards:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        # pagination:
+        #   type: object
+        # $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      properties:
+        limit:
+          type: integer
+        offset:
+          type: integer
+        total:
+          type: integer
+    Card:
+      allOf:
+        - $ref: '#/components/schemas/NewCard'
+        - type: object
+          required:
+            - _id
+          properties:
+            _id:
+              type: string
+    FullCard:
+      allOf:
+        - $ref: '#/components/schemas/NewCard'
+        - type: object
+          properties:
+            story:
+              type: string
+    NewCard:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        img:
+          type: string
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
